@@ -1,7 +1,8 @@
 import React from 'react';
-import AppStore from './AppStore';
 import TroopTrack from './components/TroopTrack';
+import registerForPushNotificationsAsync from './AppStore/pushNotifications';
 
 export default function App() {
-  return <TroopTrack appStore={new AppStore()} />;
+  registerForPushNotificationsAsync();
+  return <TroopTrack />;
 }

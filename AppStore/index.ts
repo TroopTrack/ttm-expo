@@ -7,12 +7,23 @@ import {
   offline,
   loggedIn,
 } from './types';
-import { Maybe, nothing } from 'maybeasy';
+import { Maybe, nothing, just } from 'maybeasy';
+import { SuccessfulLogin } from '../Appy';
 
 class AppStore {
   @observable
-  userState: UserState = loggedIn('asdf');
+  userState: UserState = loggedOut();
+  // userState: UserState = loggedIn({
+  //   accessToken: 'x',
+  //   id: 5,
+  //   username: 'string',
+  // });
+
+  @observable
   networkState: NetworkState = online();
+
+  @observable
+  pushNotificationToken: string = '';
 
   @action
   offline = () => {
@@ -25,13 +36,23 @@ class AppStore {
   };
 
   @action
-  loggedIn = (token: string) => {
-    this.userState = loggedIn(token);
+  loggedIn = (login: SuccessfulLogin) => {
+    this.userState = loggedIn(login);
+  };
+
+  @action
+  setPushNotificationToken = (token: string) => {
+    this.pushNotificationToken = token;
   };
 
   @computed
   get token(): Maybe<string> {
-    return nothing();
+    switch (this.userState.kind) {
+      case 'logged-in':
+        return just(this.userState.login.accessToken);
+      case 'logged-out':
+        return nothing();
+    }
   }
 }
 

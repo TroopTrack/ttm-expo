@@ -1,3 +1,5 @@
+import { SuccessfulLogin } from '../Appy';
+
 interface Offline {
   kind: 'offline';
 }
@@ -10,7 +12,7 @@ export type NetworkState = Offline | Online;
 
 interface LoggedIn {
   kind: 'logged-in';
-  accessToken: string;
+  login: SuccessfulLogin;
 }
 
 interface LoggedOut {
@@ -18,9 +20,9 @@ interface LoggedOut {
 }
 
 export const loggedOut = (): LoggedOut => ({ kind: 'logged-out' });
-export const loggedIn = (accessToken: string): LoggedIn => ({
+export const loggedIn = (login: SuccessfulLogin): LoggedIn => ({
   kind: 'logged-in',
-  accessToken,
+  login,
 });
 
 export const online = (): Online => ({ kind: 'online' });

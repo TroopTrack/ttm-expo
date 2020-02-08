@@ -5,6 +5,7 @@ import ErrorActionableReaction, {
 } from '../../ErrorActionableReaction';
 import { login, AppyError, SuccessfulLogin } from '../../Appy';
 import { toHttpTask } from 'ajaxian';
+import { appStore } from '../../AppStore';
 
 export interface Props extends EAProps<LoginStore> {
   store: LoginStore;
@@ -13,12 +14,13 @@ export interface Props extends EAProps<LoginStore> {
 type LoginError = AppyError;
 
 const handleLoginError = (store: LoginStore) => (error: LoginError) => {
-  console.log(error);
   store.error('Login failed');
 };
 
-const handleLoginSuccess = (store: LoginStore) => (login: SuccessfulLogin) => {
-  console.log(login);
+const handleLoginSuccess = (store: LoginStore) => async (
+  login: SuccessfulLogin
+) => {
+  appStore.loggedIn(login);
 };
 
 class LoginReactions extends ErrorActionableReaction<
@@ -31,18 +33,19 @@ class LoginReactions extends ErrorActionableReaction<
 
   effect = (state: LoginState) => {
     const { store } = this.props;
-    console.log('Reactions: ', state.kind);
     switch (state.kind) {
       case 'ready':
         break;
       case 'submitted':
-        store.error('Check');
         toHttpTask(
           login({
             username: state.userName,
             password: state.password,
           })
-        ).fork(handleLoginError(store), handleLoginSuccess(store));
+        ).fork(handleLoginError(store), login =>
+          handleLoginSuccess(store)(login.payload)
+        );
+        break;
       case 'error':
         break;
     }
