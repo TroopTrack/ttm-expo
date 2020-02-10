@@ -1,34 +1,16 @@
 import { observable, action, computed } from 'mobx';
-import {
-  UserState,
-  loggedOut,
-  NetworkState,
-  online,
-  offline,
-  loggedIn,
-} from './types';
+import { UserState, loggedOut, loggedIn } from './types';
 import { Maybe, nothing, just } from 'maybeasy';
-import { SuccessfulLogin } from '../Appy';
+import { SuccessfulLogin, successfulLoginDecoder } from '../Appy';
+import Task from 'taskarian';
+import { AsyncStorage } from 'react-native';
 
 class AppStore {
   @observable
   userState: UserState = loggedOut();
-  // userState: UserState = loggedIn({
-  //   accessToken: 'x',
-  //   id: 5,
-  //   username: 'string',
-  // });
-
-  @observable
-  networkState: NetworkState = online();
 
   @observable
   pushNotificationToken: string = '';
-
-  @action
-  offline = () => {
-    this.networkState = offline();
-  };
 
   @action
   loggedOut = () => {

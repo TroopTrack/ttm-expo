@@ -4,9 +4,15 @@ import { WebView } from 'react-native-webview';
 import Loader from '../Loader';
 import { styles } from '../Styles';
 import { appStore } from '../../AppStore';
+import { Maybe } from 'maybeasy';
 
 interface Props {
   token: string;
+}
+
+interface TTHeaders {
+  Authorization?: string;
+  PushNotificationToken: string;
 }
 
 @observer
@@ -25,7 +31,7 @@ class CustomHeaderWebView extends React.Component<Props> {
         userAgent="TroopTrackMobile"
         style={styles.container}
         onError={syntheticEvent => {
-          appStore.offline();
+          console.log(syntheticEvent);
         }}
         renderLoading={() => <Loader />}
       />
