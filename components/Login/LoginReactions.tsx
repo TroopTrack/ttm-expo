@@ -14,6 +14,7 @@ export interface Props extends EAProps<LoginStore> {
 type LoginError = AppyError;
 
 const handleLoginError = (store: LoginStore) => (error: LoginError) => {
+  console.log(error);
   store.error('Login failed');
 };
 

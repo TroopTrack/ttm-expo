@@ -6,10 +6,15 @@ import { styles } from '../Styles';
 import LoginStore from '../Login/store';
 import LoginReactions from '../Login/LoginReactions';
 import { appStore } from '../../AppStore';
+import registerForPushNotificationsAsync from '../../AppStore/pushNotifications';
 import CustomHeaderWebView from './CustomHeaderWebView';
 
 @observer
 class TroopTrack extends React.Component {
+  componentDidMount() {
+    registerForPushNotificationsAsync();
+  }
+
   render() {
     switch (appStore.networkState.kind) {
       case 'offline':
