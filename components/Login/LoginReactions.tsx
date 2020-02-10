@@ -6,6 +6,7 @@ import ErrorActionableReaction, {
 import { login, AppyError, SuccessfulLogin } from '../../Appy';
 import { toHttpTask } from 'ajaxian';
 import { appStore } from '../../AppStore';
+import { AsyncStorage } from 'react-native';
 
 export interface Props extends EAProps<LoginStore> {
   store: LoginStore;
@@ -18,10 +19,19 @@ const handleLoginError = (store: LoginStore) => (error: LoginError) => {
   store.error('Login failed');
 };
 
-const handleLoginSuccess = (store: LoginStore) => async (
+const handleLoginSuccess = (_store: LoginStore) => async (
   login: SuccessfulLogin
 ) => {
   appStore.loggedIn(login);
+  storeData(login);
+};
+
+const storeData = async (login: SuccessfulLogin) => {
+  try {
+    await AsyncStorage.setItem('@tt_token', JSON.stringify(login));
+  } catch (e) {
+    // saving error
+  }
 };
 
 class LoginReactions extends ErrorActionableReaction<

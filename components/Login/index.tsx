@@ -10,6 +10,8 @@ import {
 } from 'react-native';
 import { styles } from '../Styles';
 import LoginStore from './store';
+import CustomHeaderWebView from '../TroopTrack/CustomHeaderWebView';
+import { nothing } from 'maybeasy';
 
 interface Props {
   loginStore: LoginStore;
@@ -90,32 +92,7 @@ class Login extends React.Component<Props> {
           </View>
         );
       case 'error':
-        return (
-          <View style={styles.container}>
-            <ImageBackground
-              source={{
-                uri: 'https://trooptrack.com/assets/login/login_bg_0.jpg',
-              }}
-              style={styles.container}
-              imageStyle={{ opacity: 0.1 }}
-            >
-              <Image
-                source={{
-                  uri:
-                    'https://trooptrack.com/assets/marketing/core-img/logo.png',
-                }}
-                style={{
-                  width: 300,
-                  height: 60,
-                  marginBottom: 30,
-                  marginTop: 50,
-                }}
-              />
-              <Text>Login Failed</Text>
-              <Button title="Try Again" onPress={this.onTryAgainPressed} />
-            </ImageBackground>
-          </View>
-        );
+        return <CustomHeaderWebView token={nothing()} />;
     }
   }
 }
