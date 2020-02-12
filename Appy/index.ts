@@ -13,7 +13,7 @@ export interface SuccessfulLogin {
 type SuccessfulLoginResource = Resource<SuccessfulLogin>;
 
 export const successfulLoginDecoder: Decoder<SuccessfulLogin> = succeed({})
-  .assign('accessToken', field('accessToken', string))
+  .assign('accessToken', field('auth_token', string))
   .assign('id', field('id', number))
   .assign('username', field('username', string));
 

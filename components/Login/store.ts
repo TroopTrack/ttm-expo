@@ -1,5 +1,5 @@
 import { observable, action, computed } from 'mobx';
-import { nothing, Maybe, just } from 'maybeasy';
+import { nothing, Maybe } from 'maybeasy';
 import { FlashAlert } from '../../Notifications/Types';
 
 interface Ready {
