@@ -5,7 +5,7 @@ import { Resource, resourceDecoder } from '../Resource/Types';
 export type AppyError = HttpError;
 
 export interface SuccessfulLogin {
-  accessToken: string;
+  token: string;
   id: number;
   username: string;
 }
@@ -13,7 +13,7 @@ export interface SuccessfulLogin {
 type SuccessfulLoginResource = Resource<SuccessfulLogin>;
 
 export const successfulLoginDecoder: Decoder<SuccessfulLogin> = succeed({})
-  .assign('accessToken', field('auth_token', string))
+  .assign('token', field('token', string))
   .assign('id', field('id', number))
   .assign('username', field('username', string));
 

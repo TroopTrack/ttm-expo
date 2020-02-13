@@ -29,9 +29,7 @@ const handleLoginSuccess = (_store: LoginStore) => async (
 const storeData = async (login: SuccessfulLogin) => {
   try {
     await AsyncStorage.setItem('@tt_token', JSON.stringify(login));
-  } catch (e) {
-    // saving error
-  }
+  } catch (e) {}
 };
 
 class LoginReactions extends ErrorActionableReaction<

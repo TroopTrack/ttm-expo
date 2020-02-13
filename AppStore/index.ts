@@ -31,7 +31,7 @@ class AppStore {
   get token(): Maybe<string> {
     switch (this.userState.kind) {
       case 'logged-in':
-        return just(this.userState.login.accessToken);
+        return just(this.userState.login.token);
       case 'logged-out':
         return nothing();
     }

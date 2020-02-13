@@ -24,11 +24,9 @@ class TroopTrack extends React.Component {
     Task.fromPromise<any, string>(() => AsyncStorage.getItem('@tt_token')).fork(
       () => console.log('No stored login'),
       loginS => {
-        console.log(loginS);
-        if (loginS) {
+        if (loginS !== null) {
           successfulLoginDecoder.decodeJson(loginS).cata({
             Err: err => {
-              console.log(err);
               removeData();
               return;
             },
@@ -49,9 +47,7 @@ class TroopTrack extends React.Component {
   render() {
     switch (appStore.userState.kind) {
       case 'logged-in':
-        return (
-          <CustomHeaderWebView token={appStore.userState.login.accessToken} />
-        );
+        return <CustomHeaderWebView token={appStore.userState.login.token} />;
       case 'logged-out':
         const loginStore = new LoginStore();
         return (
