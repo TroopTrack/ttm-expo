@@ -7,7 +7,7 @@ export const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'flex-start',
-    marginTop: getStatusBarHeight(true),
+    marginTop: getStatusBarHeight(false),
     width: '100%',
   },
   root: {
