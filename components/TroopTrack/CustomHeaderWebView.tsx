@@ -17,9 +17,39 @@ interface TTHeaders {
 
 @observer
 class CustomHeaderWebView extends React.Component<Props> {
+  webview = null;
+  handleWebViewNavigationStateChange = newNavState => {
+    // newNavState looks something like this:
+    // {
+    //   url?: string;
+    //   title?: string;
+    //   loading?: boolean;
+    //   canGoBack?: boolean;
+    //   canGoForward?: boolean;
+    // }
+    const { url } = newNavState;
+    console.log(url);
+    appStore.setUrl(url);
+    if (!url) return;
+
+    // handle certain doctypes
+    if (url.includes('.pdf')) {
+      this.webview.stopLoading();
+      console.log("Stopped loading cuz it's a PDF");
+    }
+
+    // redirect somewhere else
+    // if (url.includes('google.com')) {
+    //   const newURL = 'https://facebook.github.io/react-native/';
+    //   const redirectTo = 'window.location = "' + newURL + '"';
+    //   this.webview.injectJavaScript(redirectTo);
+    // }
+  };
+
   render() {
     return (
       <WebView
+        ref={ref => (this.webview = ref)}
         sharedCookiesEnabled={true}
         source={{
           uri: 'https://trooptrack.com/troop_selector',
@@ -34,6 +64,7 @@ class CustomHeaderWebView extends React.Component<Props> {
           console.log(syntheticEvent);
         }}
         renderLoading={() => <Loader />}
+        onNavigationStateChange={this.handleWebViewNavigationStateChange}
       />
     );
   }

@@ -12,6 +12,9 @@ class AppStore {
   @observable
   pushNotificationToken: string = '';
 
+  @observable
+  url: string = '';
+
   @action
   loggedOut = () => {
     this.userState = loggedOut();
@@ -25,6 +28,11 @@ class AppStore {
   @action
   setPushNotificationToken = (token: string) => {
     this.pushNotificationToken = token;
+  };
+
+  @action
+  setUrl = (url: string) => {
+    this.url = url;
   };
 
   @computed
