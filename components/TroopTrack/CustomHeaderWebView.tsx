@@ -18,6 +18,7 @@ interface TTHeaders {
 @observer
 class CustomHeaderWebView extends React.Component<Props> {
   webview = null;
+
   handleWebViewNavigationStateChange = newNavState => {
     // newNavState looks something like this:
     // {
@@ -65,6 +66,13 @@ class CustomHeaderWebView extends React.Component<Props> {
         }}
         renderLoading={() => <Loader />}
         onNavigationStateChange={this.handleWebViewNavigationStateChange}
+        onShouldStartLoadWithRequest={request => {
+          // If we're loading the current URI, allow it to load
+          if (request.url === appStore.url) return true;
+          // We're loading a new URL -- change state first
+          appStore.setUrl(request.url);
+          return true;
+        }}
       />
     );
   }
