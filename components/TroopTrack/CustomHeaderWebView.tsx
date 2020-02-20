@@ -4,7 +4,8 @@ import { WebView } from 'react-native-webview';
 import Loader from '../Loader';
 import { styles } from '../Styles';
 import { appStore } from '../../AppStore';
-import { Maybe } from 'maybeasy';
+import * as FileSystem from 'expo-file-system';
+import * as WebBrowser from 'expo-web-browser';
 
 interface Props {
   token: string;
@@ -20,31 +21,30 @@ class CustomHeaderWebView extends React.Component<Props> {
   webview = null;
 
   handleWebViewNavigationStateChange = newNavState => {
-    // newNavState looks something like this:
-    // {
-    //   url?: string;
-    //   title?: string;
-    //   loading?: boolean;
-    //   canGoBack?: boolean;
-    //   canGoForward?: boolean;
-    // }
     const { url } = newNavState;
-    console.log(url);
     appStore.setUrl(url);
     if (!url) return;
 
-    // handle certain doctypes
-    if (url.includes('.pdf')) {
+    // handle certain doctypes & external urls
+    if (!url.includes('trooptrack.com')) {
+      WebBrowser.openBrowserAsync(url);
+    } else if (
+      url.includes('.pdf') ||
+      url.includes('.ics') ||
+      url.includes('.csv')
+    ) {
       this.webview.stopLoading();
-      console.log("Stopped loading cuz it's a PDF");
+      // alert(
+      //   "The mobile app doesn't support these file types yet. We're working on it!"
+      // );
+      FileSystem.downloadAsync(url, FileSystem.documentDirectory + 'small.ics')
+        .then(({ uri }) => {
+          WebBrowser.openBrowserAsync(uri);
+        })
+        .catch(error => {
+          console.error(error);
+        });
     }
-
-    // redirect somewhere else
-    // if (url.includes('google.com')) {
-    //   const newURL = 'https://facebook.github.io/react-native/';
-    //   const redirectTo = 'window.location = "' + newURL + '"';
-    //   this.webview.injectJavaScript(redirectTo);
-    // }
   };
 
   render() {
