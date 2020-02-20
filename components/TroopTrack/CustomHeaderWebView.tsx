@@ -6,6 +6,8 @@ import { styles } from '../Styles';
 import { appStore } from '../../AppStore';
 import * as FileSystem from 'expo-file-system';
 import * as WebBrowser from 'expo-web-browser';
+import FileViewer from 'react-native-file-viewer';
+import { Linking } from 'expo';
 
 interface Props {
   token: string;
@@ -34,16 +36,17 @@ class CustomHeaderWebView extends React.Component<Props> {
       url.includes('.csv')
     ) {
       this.webview.stopLoading();
-      // alert(
-      //   "The mobile app doesn't support these file types yet. We're working on it!"
-      // );
-      FileSystem.downloadAsync(url, FileSystem.documentDirectory + 'small.ics')
-        .then(({ uri }) => {
-          WebBrowser.openBrowserAsync(uri);
-        })
-        .catch(error => {
-          console.error(error);
-        });
+      alert(
+        "The mobile app doesn't support these file types yet. We're working on it!"
+      );
+      // FileSystem.downloadAsync(url, FileSystem.documentDirectory + 'small.pdf')
+      //   .then(({ uri }) => {
+      //     console.log('Finished downloading ', uri);
+      //     Linking.openURL(uri);
+      //   })
+      //   .catch(error => {
+      //     console.error(error);
+      //   });
     }
   };
 
