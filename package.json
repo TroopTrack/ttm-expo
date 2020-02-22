@@ -14,6 +14,7 @@
     "ajaxian": "^3.0.1",
     "expo": "^36.0.2",
     "expo-cli": "^3.13.1",
+    "expo-constants": "~8.0.0",
     "expo-file-system": "~8.0.0",
     "expo-permissions": "^8.0.0",
     "expo-web-browser": "~8.0.0",
@@ -27,10 +28,13 @@
     "react-native": "https://github.com/expo/react-native/archive/sdk-36.0.0.tar.gz",
     "react-native-dotenv": "^0.2.0",
     "react-native-elements": "^1.2.7",
+    "react-native-file-viewer": "^2.0.2",
     "react-native-screens": "2.0.0-alpha.12",
     "react-native-status-bar-height": "^2.4.0",
     "react-native-web": "~0.11.7",
     "react-native-webview": "~7.4.3",
+    "rn-fetch-blob": "^0.12.0",
+    "rn-pdf-reader-js": "^0.7.2",
     "taskarian": "^2.1.0"
   },
   "devDependencies": {

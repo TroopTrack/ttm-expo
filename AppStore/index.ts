@@ -5,6 +5,8 @@ import { SuccessfulLogin, successfulLoginDecoder } from '../Appy';
 import Task from 'taskarian';
 import { AsyncStorage } from 'react-native';
 
+type ViewableAs = 'webview' | 'pdfReader';
+
 class AppStore {
   @observable
   userState: UserState = loggedOut();
@@ -13,7 +15,12 @@ class AppStore {
   pushNotificationToken: string = '';
 
   @observable
-  url: string = '';
+  viewableAs: ViewableAs = 'webview';
+
+  @observable
+  url: string = 'https://trooptrack.com/troop_selector';
+
+  previousUrl: string = 'https://trooptrack.com/troop_selector';
 
   @action
   loggedOut = () => {
@@ -32,8 +39,21 @@ class AppStore {
 
   @action
   setUrl = (url: string) => {
-    console.log(url);
-    this.url = url;
+    if (this.url != url) {
+      this.previousUrl = this.url;
+      this.url = url;
+    }
+  };
+
+  @action
+  goBack = () => {
+    this.url = this.previousUrl;
+  };
+
+  @action
+  setViewableAs = (viewableAs: ViewableAs) => {
+    console.log(viewableAs);
+    this.viewableAs = viewableAs;
   };
 
   @computed

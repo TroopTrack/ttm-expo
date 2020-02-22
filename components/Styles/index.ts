@@ -17,4 +17,10 @@ export const styles = StyleSheet.create({
     width: '80%',
     backgroundColor: '#fff',
   },
+  button: {
+    alignItems: 'center',
+    backgroundColor: '#DDDDDD',
+    padding: 10,
+    marginTop: getStatusBarHeight(false),
+  },
 });
