@@ -6,7 +6,7 @@ import { styles } from '../Styles';
 import { appStore } from '../../AppStore';
 import * as FileSystem from 'expo-file-system';
 import * as WebBrowser from 'expo-web-browser';
-import { View, Text, TouchableHighlight, Linking } from 'react-native';
+import { View, Text, TouchableHighlight } from 'react-native';
 
 interface Props {
   token: string;
@@ -34,7 +34,6 @@ class CustomHeaderWebView extends React.Component<Props> {
   };
 
   handleDonePress = () => {
-    console.log('GO BACK');
     appStore.goBack();
     appStore.setViewableAs('webview');
   };
@@ -47,12 +46,21 @@ class CustomHeaderWebView extends React.Component<Props> {
     if (!url.includes('trooptrack.com')) {
       this.webview.stopLoading();
       WebBrowser.openBrowserAsync(url);
-    } else if (url.includes('.pdf') || url.includes('.csv')) {
+    } else if (
+      url.includes('.pdf') ||
+      url.includes('.csv') ||
+      url.includes('.png') ||
+      url.includes('.gif') ||
+      url.includes('.jpeg') ||
+      url.includes('.jpg')
+    ) {
       appStore.setUrl(url);
       appStore.setViewableAs('pdfReader');
     } else if (url.includes('.ics') | url.includes('.vcf')) {
       this.webview.stopLoading();
-      Linking.openURL(url);
+      alert(
+        "The mobile app doesn't support these file types yet. We're working on it!"
+      );
     } else {
       appStore.setViewableAs('webview');
       appStore.setUrl(url);

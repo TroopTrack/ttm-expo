@@ -52,7 +52,6 @@ class AppStore {
 
   @action
   setViewableAs = (viewableAs: ViewableAs) => {
-    console.log(viewableAs);
     this.viewableAs = viewableAs;
   };
 
