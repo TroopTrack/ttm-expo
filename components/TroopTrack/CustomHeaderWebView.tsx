@@ -41,13 +41,11 @@ class CustomHeaderWebView extends React.Component<Props> {
   handleWebViewNavigationStateChange = newNavState => {
     const { url } = newNavState;
     if (!url) {
-      console.log('---- No url');
       return;
     }
 
     // handle certain doctypes & external urls
     if (!url.includes('trooptrack.com')) {
-      console.log('---- Outside url');
       this.webview.stopLoading();
       WebBrowser.openBrowserAsync(url);
     } else if (
@@ -58,7 +56,6 @@ class CustomHeaderWebView extends React.Component<Props> {
       url.includes('.jpeg') ||
       url.includes('.jpg')
     ) {
-      console.log('---- file url');
       appStore.setUrl(url);
       appStore.setViewableAs('pdfReader');
     } else if (url.includes('.ics') | url.includes('.vcf')) {
@@ -67,8 +64,6 @@ class CustomHeaderWebView extends React.Component<Props> {
         "The mobile app doesn't support these file types yet. We're working on it!"
       );
     } else {
-      console.log('---- Good url');
-      // appStore.setViewableAs('webview');
       appStore.setUrl(url);
     }
   };
