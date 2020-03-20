@@ -1,6 +1,6 @@
 import React from 'react';
 import { observer } from 'mobx-react';
-import { AsyncStorage } from 'react-native';
+import { AsyncStorage, EventSubscription } from 'react-native';
 import Login from '../Login';
 import LoginStore from '../Login/store';
 import LoginReactions from '../Login/LoginReactions';
@@ -9,6 +9,7 @@ import registerForPushNotificationsAsync from '../../AppStore/pushNotifications'
 import CustomHeaderWebView from './CustomHeaderWebView';
 import Task from 'taskarian';
 import { successfulLoginDecoder, SuccessfulLogin } from '../../Appy';
+import { Notifications } from 'expo';
 
 const removeData = async () => {
   try {
@@ -20,6 +21,8 @@ const removeData = async () => {
 
 @observer
 class TroopTrack extends React.Component {
+  _notificationSubscription: any = null;
+
   getLoginFromLocal = (appStore: AppStore) => {
     Task.fromPromise<any, string>(() => AsyncStorage.getItem('@tt_token')).fork(
       () => console.log('No stored login'),
@@ -42,7 +45,18 @@ class TroopTrack extends React.Component {
   componentDidMount() {
     registerForPushNotificationsAsync();
     this.getLoginFromLocal(appStore);
+    this._notificationSubscription = Notifications.addListener(
+      this._handleNotification
+    );
   }
+
+  _handleNotification = notification => {
+    if (notification.data && notification.data.targetUrl) {
+      if (notification.origin == 'selected') {
+        appStore.setUrl(notification.data.targetUrl);
+      }
+    }
+  };
 
   render() {
     switch (appStore.userState.kind) {

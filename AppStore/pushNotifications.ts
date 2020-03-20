@@ -2,8 +2,6 @@ import { Notifications } from 'expo';
 import * as Permissions from 'expo-permissions';
 import { appStore } from '.';
 
-const PUSH_ENDPOINT = 'https://your-server.com/users/push-token';
-
 export default async function registerForPushNotificationsAsync() {
   const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
   // only asks if permissions have not already been determined, because

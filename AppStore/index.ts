@@ -17,6 +17,7 @@ class AppStore {
   @observable
   viewableAs: ViewableAs = 'webview';
 
+  @observable
   url: string = 'https://trooptrack.com/troop_selector';
 
   previousUrl: string = 'https://trooptrack.com/troop_selector';
@@ -36,6 +37,7 @@ class AppStore {
     this.pushNotificationToken = token;
   };
 
+  @action
   setUrl = (url: string) => {
     if (this.url != url) {
       this.previousUrl = this.url;
