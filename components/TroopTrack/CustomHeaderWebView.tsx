@@ -38,14 +38,14 @@ class CustomHeaderWebView extends React.Component<Props> {
     appStore.setViewableAs('webview');
   };
 
-  handleWebViewNavigationStateChange = newNavState => {
+  handleWebViewNavigationStateChange = (newNavState) => {
     const { url } = newNavState;
     if (!url) {
       return;
     }
 
     // handle certain doctypes & external urls
-    if (!url.includes('trooptrack.com')) {
+    if (!url.includes('trooptrack.com') || !url.includes('paypal.com')) {
       this.webview.stopLoading();
       WebBrowser.openBrowserAsync(url);
     } else if (
@@ -73,7 +73,7 @@ class CustomHeaderWebView extends React.Component<Props> {
       <View style={{ flex: 1 }}>
         {this.touchableHighlight()}
         <WebView
-          ref={ref => (this.webview = ref)}
+          ref={(ref) => (this.webview = ref)}
           sharedCookiesEnabled={true}
           source={{
             uri: appStore.url,
@@ -84,7 +84,7 @@ class CustomHeaderWebView extends React.Component<Props> {
           }}
           userAgent="TroopTrackMobile"
           style={styles.container}
-          onError={syntheticEvent => {
+          onError={(syntheticEvent) => {
             console.log(syntheticEvent);
           }}
           renderLoading={() => <Loader />}
