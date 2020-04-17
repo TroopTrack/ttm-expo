@@ -43,28 +43,30 @@ class CustomHeaderWebView extends React.Component<Props> {
     if (!url) {
       return;
     }
-
+    const lowerCaseUrl = url.toLowerCase();
     // handle certain doctypes & external urls
-    if (!url.includes('trooptrack.com') || !url.includes('paypal.com')) {
+    if (
+      !lowerCaseUrl.includes('trooptrack.com') &&
+      !url.includes('paypal.com')
+    ) {
+      console.log('Leaving');
       this.webview.stopLoading();
       WebBrowser.openBrowserAsync(url);
     } else if (
-      url.includes('.pdf') ||
-      url.includes('.csv') ||
-      url.includes('.png') ||
-      url.includes('.gif') ||
-      url.includes('.jpeg') ||
-      url.includes('.jpg')
+      lowerCaseUrl.includes('.pdf') ||
+      lowerCaseUrl.includes('.csv') ||
+      lowerCaseUrl.includes('.png') ||
+      lowerCaseUrl.includes('.gif') ||
+      lowerCaseUrl.includes('.jpeg') ||
+      lowerCaseUrl.includes('.jpg')
     ) {
       appStore.setUrl(url);
       appStore.setViewableAs('pdfReader');
-    } else if (url.includes('.ics') | url.includes('.vcf')) {
+    } else if (lowerCaseUrl.includes('.ics') | lowerCaseUrl.includes('.vcf')) {
       this.webview.stopLoading();
-      alert(
-        "The mobile app doesn't support these file types yet. We're working on it!"
-      );
+      alert("The mobile app doesn't currently support these file types");
     } else {
-      appStore.setUrl(url);
+      appStore.setPreviousUrl(url);
     }
   };
 

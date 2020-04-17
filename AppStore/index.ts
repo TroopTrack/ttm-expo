@@ -45,8 +45,14 @@ class AppStore {
     }
   };
 
+  setPreviousUrl = (url: string) => {
+    console.log(url);
+    this.previousUrl = url;
+  };
+
   @action
   goBack = () => {
+    console.log(this.previousUrl);
     this.url = this.previousUrl;
   };
 

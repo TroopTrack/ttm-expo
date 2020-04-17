@@ -26,10 +26,10 @@ class TroopTrack extends React.Component {
   getLoginFromLocal = (appStore: AppStore) => {
     Task.fromPromise<any, string>(() => AsyncStorage.getItem('@tt_token')).fork(
       () => console.log('No stored login'),
-      loginS => {
+      (loginS) => {
         if (loginS !== null) {
           successfulLoginDecoder.decodeJson(loginS).cata({
-            Err: err => {
+            Err: (err) => {
               removeData();
               return;
             },
@@ -50,7 +50,7 @@ class TroopTrack extends React.Component {
     );
   }
 
-  _handleNotification = notification => {
+  _handleNotification = (notification) => {
     if (notification.data && notification.data.targetUrl) {
       if (notification.origin == 'selected') {
         appStore.setUrl(notification.data.targetUrl);
