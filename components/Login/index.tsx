@@ -1,17 +1,16 @@
-import React from 'react';
-import { observer } from 'mobx-react';
+import React from "react";
+import { observer } from "mobx-react";
 import {
   View,
-  TextInput,
-  Button,
-  Text,
   ImageBackground,
   Image,
-} from 'react-native';
-import { styles } from '../Styles';
-import LoginStore from './store';
-import CustomHeaderWebView from '../TroopTrack/CustomHeaderWebView';
-import { nothing } from 'maybeasy';
+  TouchableOpacity,
+  Text,
+} from "react-native";
+import { styles } from "../Styles";
+import LoginStore from "./store";
+import CustomHeaderWebView from "../TroopTrack/CustomHeaderWebView";
+import TextInput from "../textInput/TextInput";
 
 interface Props {
   loginStore: LoginStore;
@@ -21,7 +20,7 @@ interface Props {
 class Login extends React.Component<Props> {
   constructor(props) {
     super(props);
-    this.state = { userName: '', password: '' };
+    this.state = { userName: "", password: "" };
   }
 
   onTryAgainPressed = () => {
@@ -47,52 +46,56 @@ class Login extends React.Component<Props> {
 
   render() {
     switch (this.props.loginStore.state.kind) {
-      case 'ready':
-      case 'submitted':
+      case "ready":
+      case "submitted":
         return (
-          <View style={styles.container}>
-            <ImageBackground
-              source={{
-                uri: 'https://trooptrack.com/assets/login/login_bg_0.jpg',
-              }}
-              style={styles.container}
-              imageStyle={{ opacity: 0.1 }}
-            >
+          <ImageBackground
+            source={{
+              uri: "https://trooptrack.com/assets/login/login_bg_0.jpg",
+            }}
+            style={styles.container}
+            imageStyle={{ opacity: 0.2 }}
+          >
+            <View style={styles.logoContainer}>
               <Image
                 source={{
                   uri:
-                    'https://trooptrack.com/assets/marketing/core-img/logo.png',
+                    "https://trooptrack.com/assets/marketing/core-img/logo.png",
                 }}
-                style={{
-                  width: 300,
-                  height: 60,
-                  marginBottom: 30,
-                  marginTop: 50,
-                }}
+                style={styles.logoStyle}
               />
+            </View>
+            <View style={[styles.container, styles.loginFormContainer]}>
               <TextInput
                 placeholder="User Name"
-                style={styles.root}
                 onChangeText={this.onChangeUserName}
                 value={this.props.loginStore.state.userName}
               />
               <TextInput
                 placeholder="Password"
-                style={styles.root}
                 onChangeText={this.onChangePassword}
                 value={this.props.loginStore.state.password}
-                secureTextEntry
+                textInputProps={{
+                  secureTextEntry: true,
+                }}
               />
-              <Button
-                title="Log In"
+              <TouchableOpacity
                 onPress={this.onLoginPressed}
-                disabled={this.props.loginStore.state.kind === 'submitted'}
-              />
-            </ImageBackground>
-          </View>
+                disabled={this.props.loginStore.state.kind === "submitted"}
+                style={[
+                  styles.loginButtonStyle,
+                  this.props.loginStore.state.kind === "submitted" && {
+                    opacity: 0.2,
+                  },
+                ]}
+              >
+                <Text style={styles.loginTextStyle}>Log In</Text>
+              </TouchableOpacity>
+            </View>
+          </ImageBackground>
         );
-      case 'error':
-        return <CustomHeaderWebView token={nothing()} />;
+      case "error":
+        return <CustomHeaderWebView token={""} />;
     }
   }
 }

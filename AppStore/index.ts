@@ -1,11 +1,9 @@
-import { observable, action, computed } from 'mobx';
-import { UserState, loggedOut, loggedIn } from './types';
-import { Maybe, nothing, just } from 'maybeasy';
-import { SuccessfulLogin, successfulLoginDecoder } from '../Appy';
-import Task from 'taskarian';
-import { AsyncStorage } from 'react-native';
+import { observable, action, computed } from "mobx";
+import { UserState, loggedOut, loggedIn } from "./types";
+import { Maybe, nothing, just } from "maybeasy";
+import { SuccessfulLogin } from "../Appy";
 
-type ViewableAs = 'webview' | 'pdfReader';
+type ViewableAs = "webview" | "pdfReader";
 
 class AppStore {
   @observable
@@ -15,12 +13,12 @@ class AppStore {
   pushNotificationToken: string = '';
 
   @observable
-  viewableAs: ViewableAs = 'webview';
+  viewableAs: ViewableAs = "webview";
 
   @observable
-  url: string = 'https://trooptrack.com/troop_selector';
+  url: string = "https://trooptrack.com/troop_selector";
 
-  previousUrl: string = 'https://trooptrack.com/troop_selector';
+  previousUrl: string = "https://trooptrack.com/troop_selector";
 
   @action
   loggedOut = () => {
@@ -33,7 +31,7 @@ class AppStore {
   };
 
   @action
-  setPushNotificationToken = (token: string) => {
+  setPushNotificationToken = (token:string) => {
     this.pushNotificationToken = token;
   };
 
@@ -64,9 +62,9 @@ class AppStore {
   @computed
   get token(): Maybe<string> {
     switch (this.userState.kind) {
-      case 'logged-in':
+      case "logged-in":
         return just(this.userState.login.token);
-      case 'logged-out':
+      case "logged-out":
         return nothing();
     }
   }

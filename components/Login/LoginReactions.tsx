@@ -1,12 +1,12 @@
-import Task from 'taskarian';
-import LoginStore, { LoginState } from './store';
+import Task from "taskarian";
+import LoginStore, { LoginState } from "./store";
 import ErrorActionableReaction, {
   EAProps,
-} from '../../ErrorActionableReaction';
-import { login, AppyError, SuccessfulLogin } from '../../Appy';
-import { toHttpTask } from 'ajaxian';
-import { appStore } from '../../AppStore';
-import { AsyncStorage } from 'react-native';
+} from "../../ErrorActionableReaction";
+import { login, AppyError, SuccessfulLogin } from "../../Appy";
+import { toHttpTask } from "ajaxian";
+import { appStore } from "../../AppStore";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export interface Props extends EAProps<LoginStore> {
   store: LoginStore;
@@ -15,8 +15,7 @@ export interface Props extends EAProps<LoginStore> {
 type LoginError = AppyError;
 
 const handleLoginError = (store: LoginStore) => (error: LoginError) => {
-  console.log(error);
-  store.error('Login failed');
+  store.error("Login failed");
 };
 
 const handleLoginSuccess = (_store: LoginStore) => async (
@@ -28,7 +27,7 @@ const handleLoginSuccess = (_store: LoginStore) => async (
 
 const storeData = async (login: SuccessfulLogin) => {
   try {
-    await AsyncStorage.setItem('@tt_token', JSON.stringify(login));
+    await AsyncStorage.setItem("@tt_token", JSON.stringify(login));
   } catch (e) {}
 };
 
@@ -43,19 +42,19 @@ class LoginReactions extends ErrorActionableReaction<
   effect = (state: LoginState) => {
     const { store } = this.props;
     switch (state.kind) {
-      case 'ready':
+      case "ready":
         break;
-      case 'submitted':
+      case "submitted":
         toHttpTask(
           login({
             username: state.userName,
             password: state.password,
           })
-        ).fork(handleLoginError(store), login =>
-          handleLoginSuccess(store)(login.payload)
-        );
+        ).fork(handleLoginError(store), (login) => {
+          handleLoginSuccess(store)(login.payload);
+        });
         break;
-      case 'error':
+      case "error":
         break;
     }
   };

@@ -1,12 +1,12 @@
-import { observer } from 'mobx-react';
-import React from 'react';
-import { WebView } from 'react-native-webview';
-import Loader from '../Loader';
-import { styles } from '../Styles';
-import { appStore } from '../../AppStore';
-import * as FileSystem from 'expo-file-system';
-import * as WebBrowser from 'expo-web-browser';
-import { View, Text, TouchableHighlight } from 'react-native';
+import { observer } from "mobx-react";
+import React from "react";
+import { WebView } from "react-native-webview";
+import Loader from "../Loader";
+import { styles } from "../Styles";
+import { appStore } from "../../AppStore";
+import * as WebBrowser from "expo-web-browser";
+import { Text, TouchableHighlight, SafeAreaView } from "react-native";
+import { removeData } from "../../utility/RemoveAuthData";
 
 interface Props {
   token: string;
@@ -15,12 +15,12 @@ interface Props {
 @observer
 class CustomHeaderWebView extends React.Component<Props> {
   webview = null;
-
+  
   touchableHighlight = () => {
     switch (appStore.viewableAs) {
-      case 'webview':
-        return <></>;
-      case 'pdfReader':
+      case "webview":
+        return <SafeAreaView></SafeAreaView>;
+      case "pdfReader":
         return (
           <TouchableHighlight
             onPress={() => this.handleDonePress()}
@@ -35,7 +35,7 @@ class CustomHeaderWebView extends React.Component<Props> {
 
   handleDonePress = () => {
     appStore.goBack();
-    appStore.setViewableAs('webview');
+    appStore.setViewableAs("webview");
   };
 
   handleWebViewNavigationStateChange = (newNavState) => {
@@ -46,23 +46,25 @@ class CustomHeaderWebView extends React.Component<Props> {
     const lowerCaseUrl = url.toLowerCase();
     // handle certain doctypes & external urls
     if (
-      !lowerCaseUrl.includes('trooptrack.com') &&
-      !url.includes('paypal.com')
+      !lowerCaseUrl.includes("trooptrack.com") &&
+      !url.includes("paypal.com")
     ) {
-      console.log('Leaving');
+      console.log("Leaving");
       this.webview.stopLoading();
       WebBrowser.openBrowserAsync(url);
+    } else if (lowerCaseUrl.includes("trooptrack.com/user_account_session")) {
+      removeData();
     } else if (
-      lowerCaseUrl.includes('.pdf') ||
-      lowerCaseUrl.includes('.csv') ||
-      lowerCaseUrl.includes('.png') ||
-      lowerCaseUrl.includes('.gif') ||
-      lowerCaseUrl.includes('.jpeg') ||
-      lowerCaseUrl.includes('.jpg')
+      lowerCaseUrl.includes(".pdf") ||
+      lowerCaseUrl.includes(".csv") ||
+      lowerCaseUrl.includes(".png") ||
+      lowerCaseUrl.includes(".gif") ||
+      lowerCaseUrl.includes(".jpeg") ||
+      lowerCaseUrl.includes(".jpg")
     ) {
       appStore.setUrl(url);
-      appStore.setViewableAs('pdfReader');
-    } else if (lowerCaseUrl.includes('.ics') | lowerCaseUrl.includes('.vcf')) {
+      appStore.setViewableAs("pdfReader");
+    } else if (lowerCaseUrl.includes(".ics") | lowerCaseUrl.includes(".vcf")) {
       this.webview.stopLoading();
       alert("The mobile app doesn't currently support these file types");
     } else {
@@ -72,7 +74,7 @@ class CustomHeaderWebView extends React.Component<Props> {
 
   render() {
     return (
-      <View style={{ flex: 1 }}>
+      <SafeAreaView style={{ flex: 1 }}>
         {this.touchableHighlight()}
         <WebView
           ref={(ref) => (this.webview = ref)}
@@ -80,7 +82,7 @@ class CustomHeaderWebView extends React.Component<Props> {
           source={{
             uri: appStore.url,
             headers: {
-              Authorization: 'Bearer ' + this.props.token,
+              Authorization: "Bearer " + this.props.token,
               PushNotificationToken: appStore.pushNotificationToken,
             },
           }}
@@ -91,8 +93,9 @@ class CustomHeaderWebView extends React.Component<Props> {
           }}
           renderLoading={() => <Loader />}
           onNavigationStateChange={this.handleWebViewNavigationStateChange}
+          incognito={true}
         />
-      </View>
+      </SafeAreaView>
     );
   }
 }

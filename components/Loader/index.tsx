@@ -1,8 +1,11 @@
-import * as React from 'react';
-import { ActivityIndicator } from 'react-native';
+import * as React from "react";
+import { ActivityIndicator } from "react-native";
+import { styles } from "./Styles";
 
-const Loader: React.SFC = () => (
-  <ActivityIndicator size="large" color="#0000ff" />
+interface Props {}
+
+const Loader: React.FC<Props> = (props: Props) => (
+  <ActivityIndicator size="large" color="#0000ff" style={styles.loaderStyle} />
 );
 
 export default Loader;
