@@ -1,8 +1,4 @@
 import React from "react";
-import { observer } from "mobx-react";
-import Login from "../Login";
-import LoginStore from "../Login/store";
-import LoginReactions from "../Login/LoginReactions";
 import AppStore, { appStore } from "../../AppStore";
 import registerForPushNotificationsAsync from "../../AppStore/pushNotifications";
 import CustomHeaderWebView from "./CustomHeaderWebView";
@@ -11,12 +7,21 @@ import { successfulLoginDecoder, SuccessfulLogin } from "../../Appy";
 import * as Notifications from "expo-notifications";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { removeData } from "../../utility/RemoveAuthData";
+import { useEffect } from "react";
+import { Observer } from "mobx-react";
+import LoginScreen from "../Login";
+import Loader from "../../components/Loader";
 
-@observer
-class TroopTrack extends React.Component {
-  _notificationSubscription: any = null;
+interface Props {}
 
-  getLoginFromLocal = (appStore: AppStore) => {
+const TroopTrack: React.FC<Props> = (props: Props) => {
+  let _notificationSubscription: any = null;
+
+  useEffect(() => {
+    getLoginFromLocal(appStore);
+  }, []);
+
+  const getLoginFromLocal = (appStore: AppStore) => {
     Task.fromPromise<any, string>(() => AsyncStorage.getItem("@tt_token")).fork(
       () => console.log("No stored login"),
       (loginS) => {
@@ -30,20 +35,21 @@ class TroopTrack extends React.Component {
               appStore.loggedIn(login);
             },
           });
+        } else {
+          appStore.loggedOut();
         }
       }
     );
   };
 
-  componentDidMount() {
+  useEffect(() => {
     registerForPushNotificationsAsync();
-    this.getLoginFromLocal(appStore);
-    this._notificationSubscription = Notifications.addNotificationReceivedListener(
-      this._handleNotification
+    _notificationSubscription = Notifications.addNotificationReceivedListener(
+      _handleNotification
     );
-  }
+  }, []);
 
-  _handleNotification = (notification) => {
+  const _handleNotification = (notification) => {
     if (notification.data && notification.data.targetUrl) {
       if (notification.origin == "selected") {
         appStore.setUrl(notification.data.targetUrl);
@@ -51,20 +57,24 @@ class TroopTrack extends React.Component {
     }
   };
 
-  render() {
+  const renderComponent = () => {
     switch (appStore.userState.kind) {
+      case "ready":
+        return <Loader />;
       case "logged-in":
         return <CustomHeaderWebView token={appStore.userState.login.token} />;
+      case "forgot-password-username":
+        return <CustomHeaderWebView token={""} />;
       case "logged-out":
-        const loginStore = new LoginStore();
-        return (
-          <>
-            <Login loginStore={loginStore} />
-            <LoginReactions store={loginStore} />
-          </>
-        );
+        return <LoginScreen />;
     }
-  }
-}
+  };
+
+  return (
+    <>
+      <Observer>{() => <>{renderComponent()}</>}</Observer>
+    </>
+  );
+};
 
 export default TroopTrack;

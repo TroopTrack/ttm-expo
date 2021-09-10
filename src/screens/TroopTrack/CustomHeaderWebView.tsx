@@ -1,12 +1,13 @@
 import { observer } from "mobx-react";
 import React from "react";
 import { WebView } from "react-native-webview";
-import Loader from "../Loader";
-import { styles } from "../Styles";
+import Loader from "../../components/Loader";
+import { styles } from "../../components/Styles";
 import { appStore } from "../../AppStore";
 import * as WebBrowser from "expo-web-browser";
 import { Text, TouchableHighlight, SafeAreaView } from "react-native";
 import { removeData } from "../../utility/RemoveAuthData";
+import Urls from "../../utility/Urls";
 
 interface Props {
   token: string;
@@ -15,11 +16,11 @@ interface Props {
 @observer
 class CustomHeaderWebView extends React.Component<Props> {
   webview = null;
-  
+
   touchableHighlight = () => {
     switch (appStore.viewableAs) {
       case "webview":
-        return <SafeAreaView></SafeAreaView>;
+        return;
       case "pdfReader":
         return (
           <TouchableHighlight
@@ -54,6 +55,9 @@ class CustomHeaderWebView extends React.Component<Props> {
       WebBrowser.openBrowserAsync(url);
     } else if (lowerCaseUrl.includes("trooptrack.com/user_account_session")) {
       removeData();
+      appStore.setUrl(Urls.TROOPTRACK_SELECTOR_URL);
+      appStore.setPreviousUrl(Urls.TROOPTRACK_SELECTOR_URL);
+      appStore.loggedOut();
     } else if (
       lowerCaseUrl.includes(".pdf") ||
       lowerCaseUrl.includes(".csv") ||
@@ -94,6 +98,7 @@ class CustomHeaderWebView extends React.Component<Props> {
           renderLoading={() => <Loader />}
           onNavigationStateChange={this.handleWebViewNavigationStateChange}
           incognito={true}
+          startInLoadingState={true}
         />
       </SafeAreaView>
     );

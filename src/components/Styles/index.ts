@@ -1,5 +1,6 @@
 import { Platform, StyleSheet } from "react-native";
 import { getStatusBarHeight } from "react-native-status-bar-height";
+import ColorConstant from '../../utility/ColorConstants';
 
 export const styles = StyleSheet.create({
   container: {
@@ -29,9 +30,9 @@ export const styles = StyleSheet.create({
     marginTop: getStatusBarHeight(false),
   },
   loginButtonStyle: {
-    width: "20%",
+    width: "25%",
     height: 45,
-    backgroundColor: "#2179de",
+    backgroundColor: ColorConstant.ORANGE,
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 5,
@@ -44,7 +45,7 @@ export const styles = StyleSheet.create({
   },
   loginFormContainer: {
     justifyContent: "center",
-    alignItems: "center",
+    // alignItems: "center",
     flex: 0.6,
   },
   logoStyle: {

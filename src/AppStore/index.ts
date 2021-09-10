@@ -1,24 +1,35 @@
 import { observable, action, computed } from "mobx";
-import { UserState, loggedOut, loggedIn } from "./types";
+import {
+  UserState,
+  loggedOut,
+  loggedIn,
+  forgotPasswordUsername,
+  ready,
+} from "./types";
 import { Maybe, nothing, just } from "maybeasy";
 import { SuccessfulLogin } from "../Appy";
+import Urls from "../utility/Urls";
 
 type ViewableAs = "webview" | "pdfReader";
 
 class AppStore {
   @observable
-  userState: UserState = loggedOut();
+  userState: UserState = ready();
 
   @observable
-  pushNotificationToken: string = '';
+  pushNotificationToken: string = "";
 
   @observable
   viewableAs: ViewableAs = "webview";
 
   @observable
-  url: string = "https://trooptrack.com/troop_selector";
+  url: string = Urls.TROOPTRACK_SELECTOR_URL;
+  previousUrl: string = Urls.TROOPTRACK_SELECTOR_URL;
 
-  previousUrl: string = "https://trooptrack.com/troop_selector";
+  @action
+  ready = () => {
+    this.userState = ready();
+  };
 
   @action
   loggedOut = () => {
@@ -31,7 +42,12 @@ class AppStore {
   };
 
   @action
-  setPushNotificationToken = (token:string) => {
+  forgotPasswordUsername = () => {
+    this.userState = forgotPasswordUsername();
+  };
+
+  @action
+  setPushNotificationToken = (token: string) => {
     this.pushNotificationToken = token;
   };
 
@@ -64,6 +80,7 @@ class AppStore {
     switch (this.userState.kind) {
       case "logged-in":
         return just(this.userState.login.token);
+      case "forgot-password-username":
       case "logged-out":
         return nothing();
     }

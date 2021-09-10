@@ -15,14 +15,25 @@ export interface Props extends EAProps<LoginStore> {
 type LoginError = AppyError;
 
 const handleLoginError = (store: LoginStore) => (error: LoginError) => {
-  store.error("Login failed");
+  switch (error.kind) {
+    case "bad-payload":
+    case "network-error":
+    case "timeout":
+    case "bad-url":
+      store.error("Login failed");
+      break;
+    case "bad-status":
+      const errorBody = JSON.parse(error?.response?.body);
+      const errorMsg = errorBody?.errors[0]?.code;
+      store.error(errorMsg ? errorMsg : "Login failed");
+      break;
+  }
 };
 
-const handleLoginSuccess = (_store: LoginStore) => async (
-  login: SuccessfulLogin
-) => {
+const handleLoginSuccess = (_store: LoginStore) => (login: SuccessfulLogin) => {
   appStore.loggedIn(login);
   storeData(login);
+  _store.ready("", "");
 };
 
 const storeData = async (login: SuccessfulLogin) => {
