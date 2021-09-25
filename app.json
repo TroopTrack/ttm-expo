@@ -7,7 +7,7 @@
       "ios",
       "android"
     ],
-    "version": "4.0.3",
+    "version": "4.0.4",
     "icon": "./assets/icon.png",
     "splash": {
       "image": "./assets/splash.png",
@@ -22,12 +22,12 @@
     ],
     "ios": {
       "bundleIdentifier": "com.trooptrack.TroopTrack",
-      "buildNumber": "4.0.2",
+      "buildNumber": "4.0.4",
       "supportsTablet": true
     },
     "android": {
       "package": "com.trooptrack.trooptrack",
-      "versionCode": 5
+      "versionCode": 6
     },
     "description": "",
     "notification": {
