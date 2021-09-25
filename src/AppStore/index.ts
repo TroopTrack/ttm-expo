@@ -10,7 +10,7 @@ import { Maybe, nothing, just } from "maybeasy";
 import { SuccessfulLogin } from "../Appy";
 import Urls from "../utility/Urls";
 
-type ViewableAs = "webview" | "pdfReader";
+type ViewableAs = "webview" | "pdfReader" | "printableHtml";
 
 class AppStore {
   @observable
