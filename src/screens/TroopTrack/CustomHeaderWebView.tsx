@@ -66,7 +66,6 @@ class CustomHeaderWebView extends React.Component<Props> {
 
   handleWebViewNavigationStateChange = (newNavState) => {
     const { url } = newNavState;
-    console.log(url)
     if (!url) {
       return;
     }
