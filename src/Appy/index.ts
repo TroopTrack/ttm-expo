@@ -1,6 +1,6 @@
-import { HttpError, post } from 'ajaxian';
-import Decoder, { succeed, string, field, number } from 'jsonous';
-import { Resource, resourceDecoder } from '../Resource/Types';
+import { HttpError, post } from "ajaxian";
+import Decoder, { succeed, string, field, number, nullable } from "jsonous";
+import { Resource, resourceDecoder } from "../Resource/Types";
 
 export type AppyError = HttpError;
 

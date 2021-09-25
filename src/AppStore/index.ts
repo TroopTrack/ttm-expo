@@ -1,26 +1,35 @@
-import { observable, action, computed } from 'mobx';
-import { UserState, loggedOut, loggedIn } from './types';
-import { Maybe, nothing, just } from 'maybeasy';
-import { SuccessfulLogin, successfulLoginDecoder } from '../Appy';
-import Task from 'taskarian';
-import { AsyncStorage } from 'react-native';
+import { observable, action, computed } from "mobx";
+import {
+  UserState,
+  loggedOut,
+  loggedIn,
+  forgotPasswordUsername,
+  ready,
+} from "./types";
+import { Maybe, nothing, just } from "maybeasy";
+import { SuccessfulLogin } from "../Appy";
+import Urls from "../utility/Urls";
 
-type ViewableAs = 'webview' | 'pdfReader';
+type ViewableAs = "webview" | "pdfReader";
 
 class AppStore {
   @observable
-  userState: UserState = loggedOut();
+  userState: UserState = ready();
 
   @observable
-  pushNotificationToken: string = '';
+  pushNotificationToken: string = "";
 
   @observable
-  viewableAs: ViewableAs = 'webview';
+  viewableAs: ViewableAs = "webview";
 
   @observable
-  url: string = 'https://trooptrack.com/troop_selector';
+  url: string = Urls.TROOPTRACK_SELECTOR_URL;
+  previousUrl: string = Urls.TROOPTRACK_SELECTOR_URL;
 
-  previousUrl: string = 'https://trooptrack.com/troop_selector';
+  @action
+  ready = () => {
+    this.userState = ready();
+  };
 
   @action
   loggedOut = () => {
@@ -30,6 +39,11 @@ class AppStore {
   @action
   loggedIn = (login: SuccessfulLogin) => {
     this.userState = loggedIn(login);
+  };
+
+  @action
+  forgotPasswordUsername = () => {
+    this.userState = forgotPasswordUsername();
   };
 
   @action
@@ -64,9 +78,10 @@ class AppStore {
   @computed
   get token(): Maybe<string> {
     switch (this.userState.kind) {
-      case 'logged-in':
+      case "logged-in":
         return just(this.userState.login.token);
-      case 'logged-out':
+      case "forgot-password-username":
+      case "logged-out":
         return nothing();
     }
   }
