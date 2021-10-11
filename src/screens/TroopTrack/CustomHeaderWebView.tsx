@@ -1,34 +1,36 @@
-import { observer } from "mobx-react";
-import React from "react";
+import React, { useRef, useState } from "react";
 import { WebView } from "react-native-webview";
 import Loader from "../../components/Loader";
 import { styles } from "../../components/Styles";
 import { appStore } from "../../AppStore";
 import * as WebBrowser from "expo-web-browser";
-import { Text, TouchableHighlight, SafeAreaView } from "react-native";
+import { Text, TouchableHighlight, SafeAreaView, Platform } from "react-native";
 import { removeData } from "../../utility/RemoveAuthData";
 import Urls from "../../utility/Urls";
 import * as FileSystem from "expo-file-system";
 import * as Sharing from "expo-sharing";
 import { Ionicons } from "@expo/vector-icons";
 import ColorConstants from "../../utility/ColorConstants";
+import { WebViewMessageEvent } from "react-native-webview/lib/WebViewTypes";
+import ErrorPopUp from "../../components/errorPopUp/ErrorPopUp";
+import { Observer } from "mobx-react";
 
 interface Props {
   token: string;
 }
 
-@observer
-class CustomHeaderWebView extends React.Component<Props> {
-  webview = null;
+const CustomHeaderWebView: React.FC<Props> = (props: Props) => {
+  const webview = useRef(null);
+  const [showInAppPurchaseAlert, setShowInAppPurchaseAlert] = useState(false);
 
-  touchableHighlight = () => {
+  const touchableHighlight = () => {
     switch (appStore.viewableAs) {
       case "webview":
         return;
       case "pdfReader":
         return (
           <TouchableHighlight
-            onPress={() => this.handleDonePress()}
+            onPress={() => handleDonePress()}
             style={styles.button}
             underlayColor="green"
           >
@@ -39,7 +41,7 @@ class CustomHeaderWebView extends React.Component<Props> {
         return (
           <SafeAreaView style={styles.printableHtmlHeader}>
             <TouchableHighlight
-              onPress={() => this.handleGoBack()}
+              onPress={() => handleGoBack()}
               underlayColor="#DDDDDD"
               style={{ padding: 10 }}
             >
@@ -54,17 +56,17 @@ class CustomHeaderWebView extends React.Component<Props> {
     }
   };
 
-  handleGoBack = () => {
+  const handleGoBack = () => {
     appStore.setViewableAs("webview");
     appStore.setUrl(appStore.previousUrl);
   };
 
-  handleDonePress = () => {
+  const handleDonePress = () => {
     appStore.goBack();
     appStore.setViewableAs("webview");
   };
 
-  handleWebViewNavigationStateChange = (newNavState) => {
+  const handleWebViewNavigationStateChange = (newNavState) => {
     const { url } = newNavState;
     if (!url) {
       return;
@@ -73,7 +75,7 @@ class CustomHeaderWebView extends React.Component<Props> {
     // handle certain doctypes & external urls
     if (!lowerCaseUrl.includes(Urls.DOMAIN) && !url.includes("paypal.com")) {
       console.log("Leaving");
-      this.webview.stopLoading();
+      webview.current?.stopLoading();
       WebBrowser.openBrowserAsync(url);
     } else if (lowerCaseUrl.includes(Urls.ACCOUNT_SESSION)) {
       removeData();
@@ -90,7 +92,7 @@ class CustomHeaderWebView extends React.Component<Props> {
     ) {
       appStore.setUrl(url);
     } else if (lowerCaseUrl.includes(".ics") | lowerCaseUrl.includes(".vcf")) {
-      this.webview.stopLoading();
+      webview.current?.stopLoading();
       alert("The mobile app doesn't currently support these file types");
     } else if (lowerCaseUrl.includes("printable_html=true")) {
       appStore.setUrl(url);
@@ -100,44 +102,72 @@ class CustomHeaderWebView extends React.Component<Props> {
     }
   };
 
-  saveFile = async (fileUri: string) => {
+  const saveFile = async (fileUri: string) => {
     await Sharing.shareAsync(fileUri);
   };
 
-  render() {
-    return (
-      <SafeAreaView style={{ flex: 1 }}>
-        {this.touchableHighlight()}
-        <WebView
-          ref={(ref) => (this.webview = ref)}
-          originWhitelist={["*"]}
-          source={{
-            uri: appStore.url,
-            headers: {
-              Authorization: "Bearer " + this.props.token,
-              PushNotificationToken: appStore.pushNotificationToken,
-            },
-          }}
-          userAgent="TroopTrackMobile"
-          style={styles.container}
-          onError={(syntheticEvent) => {
-            console.log(syntheticEvent);
-          }}
-          renderLoading={() => <Loader />}
-          onNavigationStateChange={this.handleWebViewNavigationStateChange}
-          incognito={true}
-          startInLoadingState={true}
-          onFileDownload={({ nativeEvent: { downloadUrl } }) => {
-            var nameArray = downloadUrl.split("/");
-            var name = nameArray[nameArray.length - 1];
-            const filename = name.split("?");
-            let fileUri = FileSystem.documentDirectory + filename[0];
-            this.saveFile(fileUri);
-          }}
-        />
-      </SafeAreaView>
-    );
-  }
-}
+  const handleOnMessage = (event: WebViewMessageEvent) => {
+    const data = JSON.parse(event.nativeEvent.data);
+    if (data.hasOwnProperty("mobile_payment")) {
+      if (!data.mobile_payment) {
+        setShowInAppPurchaseAlert(true);
+      }
+    }
+  };
+
+  return (
+    <>
+      <Observer>
+        {() => (
+          <>
+            <SafeAreaView style={{ flex: 1 }}>
+              <ErrorPopUp
+                onPressOk={() => {
+                  setShowInAppPurchaseAlert(false);
+                }}
+                visible={showInAppPurchaseAlert}
+                message={"In app purchases are not available on the mobile app"}
+                useIcon={true}
+              />
+              {touchableHighlight()}
+              <WebView
+                ref={webview}
+                originWhitelist={["*"]}
+                source={{
+                  uri: appStore.url,
+                  headers: {
+                    Authorization: "Bearer " + props.token,
+                    PushNotificationToken: appStore.pushNotificationToken,
+                  },
+                }}
+                userAgent={
+                  Platform.OS === "ios" ? "TroopTrackIOS" : "TroopTrackAndroid"
+                }
+                style={styles.container}
+                onError={(syntheticEvent) => {
+                  console.log(syntheticEvent);
+                }}
+                renderLoading={() => <Loader />}
+                onNavigationStateChange={handleWebViewNavigationStateChange}
+                incognito={true}
+                startInLoadingState={true}
+                onFileDownload={({ nativeEvent: { downloadUrl } }) => {
+                  var nameArray = downloadUrl.split("/");
+                  var name = nameArray[nameArray.length - 1];
+                  const filename = name.split("?");
+                  let fileUri = FileSystem.documentDirectory + filename[0];
+                  saveFile(fileUri);
+                }}
+                onMessage={(event) => {
+                  handleOnMessage(event);
+                }}
+              />
+            </SafeAreaView>
+          </>
+        )}
+      </Observer>
+    </>
+  );
+};
 
 export default CustomHeaderWebView;
