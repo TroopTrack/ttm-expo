@@ -1,5 +1,5 @@
-const DOMAIN = "trooptrack.test";
-const BASE_URL = `http://${DOMAIN}`;
+const DOMAIN = "trooptrack.com";
+const BASE_URL = `https://${DOMAIN}`;
 export default {
   BASE_URL: BASE_URL,
   RESET_PASSWORD_URL: `${BASE_URL}/password_resets/new`,
