@@ -30,7 +30,7 @@ export const styles = StyleSheet.create({
     marginTop: getStatusBarHeight(false),
   },
   loginButtonStyle: {
-    width: "25%",
+    width: "80%",
     height: 45,
     backgroundColor: ColorConstant.ORANGE,
     alignItems: "center",

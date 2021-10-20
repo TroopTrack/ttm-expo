@@ -13,6 +13,7 @@ import TextInput from "../../components/textInput/TextInput";
 import ErrorPopUp from "../../components/errorPopUp/ErrorPopUp";
 import ForgotuButton from "./ForgotButton";
 import LoginStore from "./store";
+import ColorConstants from "../../utility/ColorConstants";
 
 export interface Props {
   onChangeUserName: (value: string) => void;
@@ -23,6 +24,7 @@ export interface Props {
   loginStore: LoginStore;
   onTryAgainPressed: () => void;
   handleForgotPassWordUsername: (value: string) => void;
+  handleSignUp: () => void;
 }
 
 const LoginView: React.FC<Props> = (props: Props) => {
@@ -35,6 +37,7 @@ const LoginView: React.FC<Props> = (props: Props) => {
     loginStore,
     onTryAgainPressed,
     handleForgotPassWordUsername,
+    handleSignUp,
   } = props;
   const passwordRef = useRef<RNTexInput>(null);
 
@@ -90,14 +93,35 @@ const LoginView: React.FC<Props> = (props: Props) => {
             </TouchableOpacity>
             <View style={Styles.forgotPassUsernameContainer}>
               <ForgotuButton
-                title="I forgot my password"
+                title="Forgot password"
                 onPress={() => handleForgotPassWordUsername("password")}
               />
               <Text style={Styles.separatorStyle}>|</Text>
               <ForgotuButton
-                title="I forgot my user name"
+                title="Forgot username"
                 onPress={() => handleForgotPassWordUsername("username")}
               />
+            </View>
+            <View
+              style={{
+                flexDirection: "row",
+                borderRadius: 5,
+                width: "80%",
+                justifyContent: "center",
+                alignItems: "center",
+                marginVertical: 10,
+              }}
+            >
+              <Text style={{ fontWeight: "700", color: ColorConstants.GREY }}>
+                Don't have an account?{" "}
+              </Text>
+              <TouchableOpacity onPress={() => handleSignUp()}>
+                <Text
+                  style={{ fontWeight: "700", color: ColorConstants.ORANGE }}
+                >
+                  Sign up
+                </Text>
+              </TouchableOpacity>
             </View>
           </View>
           {loginStore.state.kind === "error" && (

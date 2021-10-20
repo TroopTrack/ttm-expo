@@ -45,6 +45,11 @@ const Login: React.FC<Props> = () => {
     appStore.forgotPasswordUsername();
   };
 
+  const handleSignUp = () => {
+    appStore.setUrl(Urls.SIGN_UP);
+    appStore.signup();
+  };
+
   return (
     <>
       <Observer>
@@ -59,6 +64,7 @@ const Login: React.FC<Props> = () => {
               onTryAgainPressed={onTryAgainPressed}
               loginStore={loginStore}
               handleForgotPassWordUsername={handleForgotPassWordUsername}
+              handleSignUp = {handleSignUp}
             />
             <LoginReactions store={loginStore} />
           </>

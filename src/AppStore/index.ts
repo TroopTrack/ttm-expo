@@ -5,6 +5,7 @@ import {
   loggedIn,
   forgotPasswordUsername,
   ready,
+  signup,
 } from "./types";
 import { Maybe, nothing, just } from "maybeasy";
 import { SuccessfulLogin } from "../Appy";
@@ -47,6 +48,11 @@ class AppStore {
   };
 
   @action
+  signup = () => {
+    this.userState = signup();
+  };
+
+  @action
   setPushNotificationToken = (token: string) => {
     this.pushNotificationToken = token;
   };
@@ -81,6 +87,7 @@ class AppStore {
       case "logged-in":
         return just(this.userState.login.token);
       case "forgot-password-username":
+      case 'sign-up':
       case "logged-out":
         return nothing();
     }
