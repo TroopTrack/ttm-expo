@@ -71,7 +71,15 @@ class CustomHeaderWebView extends React.Component<Props> {
     }
     const lowerCaseUrl = url.toLowerCase();
     // handle certain doctypes & external urls
-    if (!lowerCaseUrl.includes(Urls.DOMAIN) && !url.includes("paypal.com")) {
+    if (
+      newNavState.navigationType === "formsubmit" &&
+      lowerCaseUrl === "https://trooptrack.com/signups"
+    ) {
+      appStore.setUrl(url);
+    } else if (
+      !lowerCaseUrl.includes(Urls.DOMAIN) &&
+      !url.includes("paypal.com")
+    ) {
       console.log("Leaving");
       this.webview.stopLoading();
       WebBrowser.openBrowserAsync(url);
@@ -134,6 +142,7 @@ class CustomHeaderWebView extends React.Component<Props> {
             let fileUri = FileSystem.documentDirectory + filename[0];
             this.saveFile(fileUri);
           }}
+          mixedContentMode={"never"}
         />
       </SafeAreaView>
     );
