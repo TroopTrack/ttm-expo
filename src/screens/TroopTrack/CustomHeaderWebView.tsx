@@ -72,7 +72,7 @@ class CustomHeaderWebView extends React.Component<Props> {
     const lowerCaseUrl = url.toLowerCase();
     // handle certain doctypes & external urls
     if (
-      newNavState.navigationType === "formsubmit" &&
+      newNavState.navigationType === "other" &&
       lowerCaseUrl === "https://trooptrack.com/signups"
     ) {
       appStore.setUrl(url);

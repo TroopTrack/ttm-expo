@@ -13,7 +13,6 @@ import TextInput from "../../components/textInput/TextInput";
 import ErrorPopUp from "../../components/errorPopUp/ErrorPopUp";
 import ForgotuButton from "./ForgotButton";
 import LoginStore from "./store";
-import ColorConstants from "../../utility/ColorConstants";
 
 export interface Props {
   onChangeUserName: (value: string) => void;
@@ -102,25 +101,12 @@ const LoginView: React.FC<Props> = (props: Props) => {
                 onPress={() => handleForgotPassWordUsername("username")}
               />
             </View>
-            <View
-              style={{
-                flexDirection: "row",
-                borderRadius: 5,
-                width: "80%",
-                justifyContent: "center",
-                alignItems: "center",
-                marginVertical: 10,
-              }}
-            >
-              <Text style={{ fontWeight: "700", color: ColorConstants.GREY }}>
+            <View style={Styles.signUpButtonContainer}>
+              <Text style={Styles.dontHaveAccountText}>
                 Don't have an account?{" "}
               </Text>
               <TouchableOpacity onPress={() => handleSignUp()}>
-                <Text
-                  style={{ fontWeight: "700", color: ColorConstants.ORANGE }}
-                >
-                  Sign up
-                </Text>
+                <Text style={Styles.signUpText}>Sign up</Text>
               </TouchableOpacity>
             </View>
           </View>
