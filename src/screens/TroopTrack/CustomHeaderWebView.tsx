@@ -1,5 +1,6 @@
 import { observer } from "mobx-react";
 import React from "react";
+import { Platform, Linking } from "react-native";
 import { WebView } from "react-native-webview";
 import Loader from "../../components/Loader";
 import { styles } from "../../components/Styles";
@@ -12,6 +13,7 @@ import * as FileSystem from "expo-file-system";
 import * as Sharing from "expo-sharing";
 import { Ionicons } from "@expo/vector-icons";
 import ColorConstants from "../../utility/ColorConstants";
+import { WebViewMessageEvent } from "react-native-webview/lib/WebViewTypes";
 
 interface Props {
   token: string;
@@ -64,6 +66,17 @@ class CustomHeaderWebView extends React.Component<Props> {
     appStore.setViewableAs("webview");
   };
 
+  dialCall = (number: number) => {
+    let phoneNumber = number.toString();
+
+    if (Platform.OS === "android") {
+      phoneNumber = `tel:${number}`;
+    } else {
+      phoneNumber = `telprompt:${number}`;
+    }
+    Linking.openURL(phoneNumber);
+  };
+
   handleWebViewNavigationStateChange = (newNavState) => {
     const { url } = newNavState;
     if (!url) {
@@ -112,6 +125,15 @@ class CustomHeaderWebView extends React.Component<Props> {
     await Sharing.shareAsync(fileUri);
   };
 
+  handleOnMessage = (event: WebViewMessageEvent) => {
+    const data = JSON.parse(event.nativeEvent.data);
+    if (data.hasOwnProperty("number")) {
+      this.dialCall(data.number);
+    } else if (data.hasOwnProperty("email")) {
+      Linking.openURL(`mailto:${data.email}`);
+    }
+  };
+
   render() {
     return (
       <SafeAreaView style={{ flex: 1 }}>
@@ -143,6 +165,7 @@ class CustomHeaderWebView extends React.Component<Props> {
             this.saveFile(fileUri);
           }}
           mixedContentMode={"never"}
+          onMessage={(event) => this.handleOnMessage(event)}
         />
       </SafeAreaView>
     );
