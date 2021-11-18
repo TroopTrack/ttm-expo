@@ -4,7 +4,13 @@ import Loader from "../../components/Loader";
 import { styles } from "../../components/Styles";
 import { appStore } from "../../AppStore";
 import * as WebBrowser from "expo-web-browser";
-import { Text, TouchableHighlight, SafeAreaView, Platform } from "react-native";
+import {
+  Text,
+  TouchableHighlight,
+  SafeAreaView,
+  Platform,
+  Linking,
+} from "react-native";
 import { removeData } from "../../utility/RemoveAuthData";
 import Urls from "../../utility/Urls";
 import * as FileSystem from "expo-file-system";
@@ -66,6 +72,17 @@ const CustomHeaderWebView: React.FC<Props> = (props: Props) => {
     appStore.setViewableAs("webview");
   };
 
+  const dialCall = (number: number) => {
+    let phoneNumber = number.toString();
+
+    if (Platform.OS === "android") {
+      phoneNumber = `tel:${number}`;
+    } else {
+      phoneNumber = `telprompt:${number}`;
+    }
+    Linking.openURL(phoneNumber);
+  };
+
   const handleWebViewNavigationStateChange = (newNavState) => {
     const { url } = newNavState;
     if (!url) {
@@ -112,6 +129,10 @@ const CustomHeaderWebView: React.FC<Props> = (props: Props) => {
       if (!data.mobile_payment) {
         setShowInAppPurchaseAlert(true);
       }
+    } else if (data.hasOwnProperty("number")) {
+      dialCall(data.number);
+    } else if (data.hasOwnProperty("email")) {
+      Linking.openURL(`mailto:${data.email}`);
     }
   };
 
