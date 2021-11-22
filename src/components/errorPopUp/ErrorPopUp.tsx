@@ -1,6 +1,8 @@
 import React from "react";
 import { Modal, View, TouchableOpacity, Text } from "react-native";
 import Styles from "./Styles";
+import { Octicons } from "@expo/vector-icons";
+import ColorConstants from "../../utility/ColorConstants";
 
 export interface Props {
   visible: boolean;
@@ -8,6 +10,7 @@ export interface Props {
   title?: string;
   message?: string;
   buttonTitle?: string;
+  useIcon?: boolean;
 }
 
 const ErrorPopUp: React.FC<Props> = (props: Props) => {
@@ -17,6 +20,7 @@ const ErrorPopUp: React.FC<Props> = (props: Props) => {
     title,
     message = "Something went wrong",
     buttonTitle = "Ok",
+    useIcon = false,
   } = props;
 
   return (
@@ -30,7 +34,15 @@ const ErrorPopUp: React.FC<Props> = (props: Props) => {
         <View style={Styles.popupContainer}>
           <View style={Styles.errorMessageContainer}>
             <View style={Styles.iconAndTitleContainer}>
-            <Text style={Styles.oopsTextStyle}>Error</Text>
+              {useIcon ? (
+                <Octicons
+                  name="alert"
+                  size={24}
+                  color={ColorConstants.ORANGE}
+                />
+              ) : (
+                <Text style={Styles.oopsTextStyle}>Error</Text>
+              )}
             </View>
             <Text style={Styles.errorMessageStyle}>{message}</Text>
           </View>
