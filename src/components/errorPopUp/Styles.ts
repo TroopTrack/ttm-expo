@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     alignItems: "center",
-    paddingTop:10
+    paddingTop: 10,
   },
   okTextStyle: {
     color: ColorConstant.BLUE,
