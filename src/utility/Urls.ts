@@ -8,4 +8,5 @@ export default {
   JWT_ENPOINT: `${BASE_URL}/jwt`,
   DOMAIN: DOMAIN,
   ACCOUNT_SESSION: `${DOMAIN}/user_account_session`,
+  SIGN_UP:`${BASE_URL}/signups/new`
 };

@@ -20,9 +20,25 @@ const styles = StyleSheet.create({
     marginTop: 10,
     alignItems: "center",
   },
-  backgroundImageStyle:{
-    opacity: 0.2
-  }
+  backgroundImageStyle: {
+    opacity: 0.2,
+  },
+  signUpButtonContainer: {
+    flexDirection: "row",
+    borderRadius: 5,
+    width: "80%",
+    justifyContent: "center",
+    alignItems: "center",
+    marginVertical: 10,
+  },
+  dontHaveAccountText: {
+    fontWeight: "700",
+    color: ColorConstant.GREY,
+  },
+  signUpText: {
+    fontWeight: "700",
+    color: ColorConstant.ORANGE,
+  },
 });
 
 export default styles;

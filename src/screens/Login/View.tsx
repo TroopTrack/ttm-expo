@@ -23,6 +23,7 @@ export interface Props {
   loginStore: LoginStore;
   onTryAgainPressed: () => void;
   handleForgotPassWordUsername: (value: string) => void;
+  handleSignUp: () => void;
 }
 
 const LoginView: React.FC<Props> = (props: Props) => {
@@ -35,6 +36,7 @@ const LoginView: React.FC<Props> = (props: Props) => {
     loginStore,
     onTryAgainPressed,
     handleForgotPassWordUsername,
+    handleSignUp,
   } = props;
   const passwordRef = useRef<RNTexInput>(null);
 
@@ -90,14 +92,22 @@ const LoginView: React.FC<Props> = (props: Props) => {
             </TouchableOpacity>
             <View style={Styles.forgotPassUsernameContainer}>
               <ForgotuButton
-                title="I forgot my password"
+                title="Forgot password"
                 onPress={() => handleForgotPassWordUsername("password")}
               />
               <Text style={Styles.separatorStyle}>|</Text>
               <ForgotuButton
-                title="I forgot my user name"
+                title="Forgot username"
                 onPress={() => handleForgotPassWordUsername("username")}
               />
+            </View>
+            <View style={Styles.signUpButtonContainer}>
+              <Text style={Styles.dontHaveAccountText}>
+                Don't have an account?{" "}
+              </Text>
+              <TouchableOpacity onPress={() => handleSignUp()}>
+                <Text style={Styles.signUpText}>Sign up</Text>
+              </TouchableOpacity>
             </View>
           </View>
           {loginStore.state.kind === "error" && (

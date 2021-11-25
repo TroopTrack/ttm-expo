@@ -64,6 +64,7 @@ const TroopTrack: React.FC<Props> = (props: Props) => {
       case "logged-in":
         return <CustomHeaderWebView token={appStore.userState.login.token} />;
       case "forgot-password-username":
+      case "sign-up":
         return <CustomHeaderWebView token={""} />;
       case "logged-out":
         return <LoginScreen />;

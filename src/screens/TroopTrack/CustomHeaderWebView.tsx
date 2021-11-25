@@ -90,7 +90,15 @@ const CustomHeaderWebView: React.FC<Props> = (props: Props) => {
     }
     const lowerCaseUrl = url.toLowerCase();
     // handle certain doctypes & external urls
-    if (!lowerCaseUrl.includes(Urls.DOMAIN) && !url.includes("paypal.com")) {
+    if (
+      newNavState.navigationType === "other" &&
+      lowerCaseUrl === "https://trooptrack.com/signups"
+    ) {
+      appStore.setUrl(url);
+    } else if (
+      !lowerCaseUrl.includes(Urls.DOMAIN) &&
+      !url.includes("paypal.com")
+    ) {
       console.log("Leaving");
       webview.current?.stopLoading();
       WebBrowser.openBrowserAsync(url);
