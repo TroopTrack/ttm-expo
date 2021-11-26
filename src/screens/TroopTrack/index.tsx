@@ -1,10 +1,8 @@
 import React from "react";
 import AppStore, { appStore } from "../../AppStore";
-import registerForPushNotificationsAsync from "../../AppStore/pushNotifications";
 import CustomHeaderWebView from "./CustomHeaderWebView";
 import Task from "taskarian";
 import { successfulLoginDecoder, SuccessfulLogin } from "../../Appy";
-import * as Notifications from "expo-notifications";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { removeData } from "../../utility/RemoveAuthData";
 import { useEffect } from "react";
@@ -15,8 +13,6 @@ import Loader from "../../components/Loader";
 interface Props {}
 
 const TroopTrack: React.FC<Props> = (props: Props) => {
-  let _notificationSubscription: any = null;
-
   useEffect(() => {
     getLoginFromLocal(appStore);
   }, []);
@@ -40,21 +36,6 @@ const TroopTrack: React.FC<Props> = (props: Props) => {
         }
       }
     );
-  };
-
-  useEffect(() => {
-    registerForPushNotificationsAsync();
-    _notificationSubscription = Notifications.addNotificationReceivedListener(
-      _handleNotification
-    );
-  }, []);
-
-  const _handleNotification = (notification) => {
-    if (notification.data && notification.data.targetUrl) {
-      if (notification.origin == "selected") {
-        appStore.setUrl(notification.data.targetUrl);
-      }
-    }
   };
 
   const renderComponent = () => {

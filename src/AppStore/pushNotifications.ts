@@ -3,22 +3,22 @@ import { appStore } from ".";
 import Constants from "expo-constants";
 
 export default async function registerForPushNotificationsAsync() {
+  let token;
   if (Constants.isDevice) {
-    const { status } = await Notifications.getPermissionsAsync();
-    // only asks if permissions have not already been determined, because
-    // iOS won't necessarily prompt the user a second time.
-    // On Android, permissions are granted on app installation, so
-    // `askAsync` will never prompt the user
-
-    // Stop here if the user did not grant permissions
-    if (status !== "granted") {
+    const {
+      status: existingStatus,
+    } = await Notifications.getPermissionsAsync();
+    let finalStatus = existingStatus;
+    if (existingStatus !== "granted") {
+      const { status } = await Notifications.requestPermissionsAsync();
+      finalStatus = status;
+    }
+    if (finalStatus !== "granted") {
+      console.log("Failed to get push token for push notification!");
       return;
     }
-
-    // Get the token that identifies this device
-    let token = (await Notifications.getExpoPushTokenAsync()).data;
-
+    token = (await Notifications.getExpoPushTokenAsync()).data;
     appStore.setPushNotificationToken(token);
-    return token;
   }
+  return token;
 }
