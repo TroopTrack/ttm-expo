@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { WebView } from "react-native-webview";
 import Loader from "../../components/Loader";
 import { styles } from "../../components/Styles";
@@ -20,14 +20,32 @@ import ColorConstants from "../../utility/ColorConstants";
 import { WebViewMessageEvent } from "react-native-webview/lib/WebViewTypes";
 import ErrorPopUp from "../../components/errorPopUp/ErrorPopUp";
 import { Observer } from "mobx-react";
+import registerForPushNotificationsAsync from "../../AppStore/pushNotifications";
+import * as Notifications from "expo-notifications";
 
 interface Props {
   token: string;
 }
 
 const CustomHeaderWebView: React.FC<Props> = (props: Props) => {
+  let _notificationSubscription: any = null;
   const webview = useRef(null);
   const [showInAppPurchaseAlert, setShowInAppPurchaseAlert] = useState(false);
+
+  useEffect(() => {
+    registerForPushNotificationsAsync();
+    _notificationSubscription = Notifications.addNotificationReceivedListener(
+      _handleNotification
+    );
+  }, []);
+
+  const _handleNotification = (notification) => {
+    if (notification.data && notification.data.targetUrl) {
+      if (notification.origin == "selected") {
+        appStore.setUrl(notification.data.targetUrl);
+      }
+    }
+  };
 
   const touchableHighlight = () => {
     switch (appStore.viewableAs) {
