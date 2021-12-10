@@ -1,0 +1,38 @@
+{
+    "expo": {
+      "name": "Demo App",
+      "slug": "ttmexpo",
+      "privacy": "public",
+      "platforms": [
+        "ios",
+        "android"
+      ],
+      "version": "4.0.5",
+      "icon": "./assets/appIcon2.png",
+      "splash": {
+        "image": "./assets/splashDemo1.png",
+        "resizeMode": "contain",
+        "backgroundColor": "#ffffff"
+      },
+      "updates": {
+        "fallbackToCacheTimeout": 0
+      },
+      "assetBundlePatterns": [
+        "**/*"
+      ],
+      "ios": {
+        "bundleIdentifier": "com.demoapp.demoapp",
+        "buildNumber": "4.0.5",
+        "supportsTablet": true
+      },
+      "android": {
+        "package": "com.demoapp.demoapp",
+        "versionCode": 7
+      },
+      "description": "",
+      "notification": {
+        "iosDisplayInForeground": true
+      }
+    }
+  }
+  
